@@ -1,5 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Scanner;
@@ -7,24 +10,10 @@ import java.util.Scanner;
 public class TrieCompletion {
     public static void main(String[] args) {
         //prepair the map and trie
-        Trie trie = new Trie();
+        
+        // trie = LoadTrie("Tried.bin");
 
-        System.out.println("Setting up");
-        long loadTime = System.currentTimeMillis();
-        try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream("Tried.bin"))){
-            trie = (Trie) inFile.readObject();
-        }
-        catch(ClassNotFoundException cnfe){
-            System.out.println(cnfe);
-        }
-        catch(FileNotFoundException fnfe){
-            System.out.println(fnfe);
-        }
-        catch(IOException e){
-            System.out.println(e);
-        }
-        loadTime = System.currentTimeMillis()-loadTime;
-        System.out.println("Loading took is "+loadTime+" ms");
+        Trie trie = CreateTrie("gutenberg-all-lowercase-words-with-counts.txt");
 
         //User input part
         Scanner scanner = new Scanner(System.in);
@@ -85,6 +74,54 @@ public class TrieCompletion {
                 break;
             }
         }
+    }
+    
+    static Trie CreateTrie(String fileName){
+        Trie trie = new Trie();
+        //long timenano = System.nanoTime();
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+            try {
+                int dictSize = 152480;
+                for (int i = 1; i <= dictSize; i++) {
+                    String[] line = reader.readLine().split(" ");
+                    trie.insert(line[line.length-1], Integer.parseInt(line[line.length-2]));
+                }
+            } catch (Exception e) {
+                System.out.println("out of loop\n"+e);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        //timenano = System.nanoTime()-timenano;
+        //System.out.println("time: "+timenano/1000000+" milliseconds");
+        //System.out.println(trie.size());
+        return trie;
+    }
+
+
+    static Trie LoadTrie(String fileName){
+        System.out.println("Setting up");
+        Trie trie;
+        long loadTime = System.currentTimeMillis();
+        try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(fileName))){
+            trie = (Trie) inFile.readObject();
+        }
+        catch(ClassNotFoundException cnfe){
+            System.out.println(cnfe);
+            return null;
+        }
+        catch(FileNotFoundException fnfe){
+            System.out.println(fnfe);
+            return null;
+        }
+        catch(IOException e){
+            System.out.println(e);
+            return null;
+        }
+        loadTime = System.currentTimeMillis()-loadTime;
+        System.out.println("Loading took is "+loadTime+" ms");
+        return trie;
     }
 }
 
