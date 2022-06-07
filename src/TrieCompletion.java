@@ -1,18 +1,12 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Scanner;
 
 public class TrieCompletion {
     public static void main(String[] args) {
         //prepair the map and trie
-        
-        // trie = LoadTrie("Tried.bin");
-
         Trie trie = CreateTrie("gutenberg-all-lowercase-words-with-counts.txt");
 
         //User input part
@@ -96,31 +90,6 @@ public class TrieCompletion {
         //timenano = System.nanoTime()-timenano;
         //System.out.println("time: "+timenano/1000000+" milliseconds");
         //System.out.println(trie.size());
-        return trie;
-    }
-
-
-    static Trie LoadTrie(String fileName){
-        System.out.println("Setting up");
-        Trie trie;
-        long loadTime = System.currentTimeMillis();
-        try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(fileName))){
-            trie = (Trie) inFile.readObject();
-        }
-        catch(ClassNotFoundException cnfe){
-            System.out.println(cnfe);
-            return null;
-        }
-        catch(FileNotFoundException fnfe){
-            System.out.println(fnfe);
-            return null;
-        }
-        catch(IOException e){
-            System.out.println(e);
-            return null;
-        }
-        loadTime = System.currentTimeMillis()-loadTime;
-        System.out.println("Loading took is "+loadTime+" ms");
         return trie;
     }
 }
