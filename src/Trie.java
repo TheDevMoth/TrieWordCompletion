@@ -157,8 +157,8 @@ public class Trie implements Serializable{
         if(tracker.children.size() > 0) //the branch of tracker continues into a different word
             tracker.freq = -1;
         //there are other words using the subtree delete the ending point
-        // else if(prevWordEnd.children.get(key).children.size()>1)
-        //     prevWordEnd.children.get(key).children.remove(null);
+        else if(prevWordEnd.children.get(key).children.size()>1)
+            prevWordEnd.children.get(key).children.remove(null);
         else { //otherwise delete the subtree
             size -= nodesInSubtree(prevWordEnd.children.get(key));
             prevWordEnd.children.remove(key);
